@@ -20,8 +20,8 @@ agents_router = APIRouter(prefix="/agents", tags=["Agents"])
 
 
 class Model(str, Enum):
-    gpt_4_1 = "gpt-4.1"
-    o4_mini = "o4-mini"
+    llama3_1_8b = "llama3.1:8b"
+    deepseek_r1_8b = "deepseek-r1:8b"
 
 
 @agents_router.get("", response_model=List[str])
@@ -59,7 +59,7 @@ class RunRequest(BaseModel):
 
     message: str
     stream: bool = True
-    model: Model = Model.gpt_4_1
+    model: Model = Model.llama3_1_8b
     user_id: Optional[str] = None
     session_id: Optional[str] = None
 

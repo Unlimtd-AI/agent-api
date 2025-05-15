@@ -2,17 +2,16 @@ from textwrap import dedent
 from typing import Optional
 
 from agno.agent import Agent, AgentKnowledge
-from agno.embedder.openai import OpenAIEmbedder
+from agno.embedder.ollama import OllamaEmbedder
 from agno.knowledge.url import UrlKnowledge
 from agno.memory.v2.db.postgres import PostgresMemoryDb
 from agno.memory.v2.memory import Memory
-from agno.models.openai import OpenAIChat
+from agno.models.ollama import Ollama
 from agno.storage.agent.postgres import PostgresAgentStorage
 from agno.tools.duckduckgo import DuckDuckGoTools
 from agno.vectordb.pgvector import PgVector, SearchType
 
 from db.session import db_url
-
 
 def get_agno_assist_knowledge() -> AgentKnowledge:
     return UrlKnowledge(
@@ -21,13 +20,13 @@ def get_agno_assist_knowledge() -> AgentKnowledge:
             db_url=db_url,
             table_name="agno_assist_knowledge",
             search_type=SearchType.hybrid,
-            embedder=OpenAIEmbedder(id="text-embedding-3-small"),
+            embedder=OllamaEmbedder(id="llama2:7b")
         ),
     )
 
 
 def get_agno_assist(
-    model_id: str = "gpt-4.1",
+    model_id: str = "llama3.1:8b",
     user_id: Optional[str] = None,
     session_id: Optional[str] = None,
     debug_mode: bool = True,
@@ -37,7 +36,7 @@ def get_agno_assist(
         agent_id="agno_assist",
         user_id=user_id,
         session_id=session_id,
-        model=OpenAIChat(id=model_id),
+        model=Ollama(id=model_id),
         # Tools available to the agent
         tools=[DuckDuckGoTools()],
         # Description of the agent
@@ -115,7 +114,7 @@ def get_agno_assist(
         # -*- Memory -*-
         # Enable agentic memory where the Agent can personalize responses to the user
         memory=Memory(
-            model=OpenAIChat(id=model_id),
+            model=Ollama(id=model_id),
             db=PostgresMemoryDb(table_name="user_memories", db_url=db_url),
             delete_memories=True,
             clear_memories=True,

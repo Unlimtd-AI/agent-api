@@ -4,7 +4,7 @@ from typing import Optional
 from agno.agent import Agent
 from agno.memory.v2.db.postgres import PostgresMemoryDb
 from agno.memory.v2.memory import Memory
-from agno.models.openai import OpenAIChat
+from agno.models.ollama import Ollama
 from agno.storage.agent.postgres import PostgresAgentStorage
 from agno.tools.duckduckgo import DuckDuckGoTools
 from agno.tools.yfinance import YFinanceTools
@@ -13,7 +13,7 @@ from db.session import db_url
 
 
 def get_finance_agent(
-    model_id: str = "gpt-4.1",
+    model_id: str = "llama3.1:8b",
     user_id: Optional[str] = None,
     session_id: Optional[str] = None,
     debug_mode: bool = True,
@@ -23,7 +23,7 @@ def get_finance_agent(
         agent_id="finance_agent",
         user_id=user_id,
         session_id=session_id,
-        model=OpenAIChat(id=model_id),
+        model=Ollama(id=model_id),
         # Tools available to the agent
         tools=[
             DuckDuckGoTools(),
@@ -113,7 +113,7 @@ def get_finance_agent(
         # -*- Memory -*-
         # Enable agentic memory where the Agent can personalize responses to the user
         memory=Memory(
-            model=OpenAIChat(id=model_id),
+            model=Ollama(id=model_id),
             db=PostgresMemoryDb(table_name="user_memories", db_url=db_url),
             delete_memories=True,
             clear_memories=True,
