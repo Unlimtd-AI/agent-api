@@ -3,7 +3,7 @@ name = "agent-api"
 version = "0.1.0"
 requires-python = ">=3.11"
 readme = "README.md"
-authors = [{ name = "Agno", email = "hello@agno.com" }]
+authors = [{ name = "Nhlanhla Malaza", email = "nhlanhla@unlimtd.xyz" }]
 
 dependencies = [
   "agno==1.4.6",

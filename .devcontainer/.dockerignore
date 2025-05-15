@@ -29,5 +29,3 @@ dist
 # ignore virtualenvs
 .venv*
 venv*
-
-*.log
