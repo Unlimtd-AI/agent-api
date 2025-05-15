@@ -1,5 +1,7 @@
 from os import getenv
+from dotenv import load_dotenv
 
+load_dotenv()  # This will load variables from a .env file into the environment
 
 def get_db_url() -> str:
     db_driver = getenv("DB_DRIVER", "postgresql+psycopg")

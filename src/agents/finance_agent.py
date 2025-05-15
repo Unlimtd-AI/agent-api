@@ -11,7 +11,6 @@ from agno.tools.yfinance import YFinanceTools
 
 from db.session import db_url
 
-
 def get_finance_agent(
     model_id: str = "llama3.1:8b",
     user_id: Optional[str] = None,

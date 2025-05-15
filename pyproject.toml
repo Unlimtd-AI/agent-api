@@ -14,6 +14,11 @@ dependencies = [
   "psycopg[binary]",
   "sqlalchemy",
   "yfinance",
+  "ollama",
+  "python-dotenv",
+  
+  "packaging",
+  "importlib-metadata"
 ]
 
 [project.optional-dependencies]

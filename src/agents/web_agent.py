@@ -10,7 +10,6 @@ from agno.tools.duckduckgo import DuckDuckGoTools
 
 from db.session import db_url
 
-
 def get_web_agent(
     model_id: str = "llama3.1:8b",
     user_id: Optional[str] = None,
@@ -87,8 +86,8 @@ def get_web_agent(
         memory=Memory(
             model=Ollama(id=model_id),
             db=PostgresMemoryDb(table_name="user_memories", db_url=db_url),
-            delete_memories=True,
-            clear_memories=True,
+            delete_memories=False,
+            clear_memories=False,
         ),
         enable_agentic_memory=True,
         # -*- Other settings -*-
