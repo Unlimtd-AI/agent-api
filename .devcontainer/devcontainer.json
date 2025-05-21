@@ -42,7 +42,9 @@
             "github.copilot",
             "github.codespaces",
             "hermitter.oh-lucy-vscode",
-            "pkief.material-icon-theme"
+            "pkief.material-icon-theme",
+            "Postman.postman-for-vscode",
+            "humao.rest-client"
          ]
       }
    },

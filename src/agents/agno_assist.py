@@ -24,7 +24,6 @@ def get_agno_assist_knowledge() -> AgentKnowledge:
         ),
     )
 
-
 def get_agno_assist(
     model_id: str = "llama3.1:8b",
     user_id: Optional[str] = None,

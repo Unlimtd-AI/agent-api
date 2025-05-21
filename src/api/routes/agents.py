@@ -1,11 +1,11 @@
-from enum import Enum
+import json
 from logging import getLogger
 from typing import AsyncGenerator, List, Optional
 
 from agno.agent import Agent, AgentKnowledge
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from models.api_requests import RunRequest
 
 from agents.agno_assist import get_agno_assist_knowledge
 from agents.selector import AgentType, get_agent, get_available_agents
@@ -18,12 +18,6 @@ logger = getLogger(__name__)
 
 agents_router = APIRouter(prefix="/agents", tags=["Agents"])
 
-
-class Model(str, Enum):
-    llama3_1_8b = "llama3.1:8b"
-    deepseek_r1_8b = "deepseek-r1:8b"
-
-
 @agents_router.get("", response_model=List[str])
 async def list_agents():
     """
@@ -32,8 +26,8 @@ async def list_agents():
     Returns:
         List[str]: List of agent identifiers
     """
-    return get_available_agents()
-
+    
+    return {"agents": get_available_agents()}
 
 async def chat_response_streamer(agent: Agent, message: str) -> AsyncGenerator:
     """
@@ -51,17 +45,12 @@ async def chat_response_streamer(agent: Agent, message: str) -> AsyncGenerator:
         # chunk.content only contains the text response from the Agent.
         # For advanced use cases, we should yield the entire chunk
         # that contains the tool calls and intermediate steps.
-        yield chunk.content
-
-
-class RunRequest(BaseModel):
-    """Request model for an running an agent"""
-
-    message: str
-    stream: bool = True
-    model: Model = Model.llama3_1_8b
-    user_id: Optional[str] = None
-    session_id: Optional[str] = None
+        # yield chunk.content
+        
+        # Wrap each chunk in a JSON object
+        data = {"content": chunk.content}
+        yield f"{json.dumps(data)}\n\n"  # Server-Sent Events format
+        
 
 @agents_router.post("/{agent_id}/runs", status_code=status.HTTP_200_OK)
 async def create_agent_run(agent_id: AgentType, body: RunRequest):
@@ -79,7 +68,6 @@ async def create_agent_run(agent_id: AgentType, body: RunRequest):
 
     try:
         agent: Agent = get_agent(
-            model_id=body.model.value,
             agent_id=agent_id,
             user_id=body.user_id,
             session_id=body.session_id,
@@ -97,7 +85,8 @@ async def create_agent_run(agent_id: AgentType, body: RunRequest):
         # In this case, the response.content only contains the text response from the Agent.
         # For advanced use cases, we should yield the entire response
         # that contains the tool calls and intermediate steps.
-        return response.content
+        # return response.content
+        return {"content": response.content}
 
 
 @agents_router.post("/{agent_id}/knowledge/load", status_code=status.HTTP_200_OK)
