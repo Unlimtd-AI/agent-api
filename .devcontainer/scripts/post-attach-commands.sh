@@ -24,4 +24,4 @@ ollama pull llama3.1:70b
 
 # For embedding
 ollama pull llama2:7b
- ollama pull llama2:70b
+ollama pull llama2:70b

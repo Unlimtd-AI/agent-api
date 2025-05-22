@@ -3,9 +3,7 @@ from typing import List, Optional
 
 from agents.agno_assist import get_agno_assist
 from agents.finance_agent import get_finance_agent
-from agents.wallety_helpdesk_agent import get_wallety_assist_agent
 from agents.web_agent import get_web_agent
-from config.llm_config import LlamaSettings
 
 
 class AgentType(Enum):
@@ -13,7 +11,7 @@ class AgentType(Enum):
     AGNO_ASSIST = "agno_assist"
     FINANCE_AGENT = "finance_agent"
     WALLETY_ASSIST_AGENT = "wallety_helpdesk_agent"
-
+    WALLETY_ASSIST_AGENT = "wallety_transaction_agent" 
 
 def get_available_agents() -> List[str]:
     """Returns a list of all available agent IDs."""
@@ -26,6 +24,8 @@ def get_agent(
     session_id: Optional[str] = None,
     debug_mode: bool = True,
 ):
+    model_id = "llama3.1:70b"
+    
     if agent_id == AgentType.WEB_AGENT:
         return get_web_agent(model_id=model_id, user_id=user_id, session_id=session_id, debug_mode=debug_mode)
     elif agent_id == AgentType.AGNO_ASSIST:
@@ -33,6 +33,6 @@ def get_agent(
     elif agent_id == AgentType.FINANCE_AGENT:
         return get_finance_agent(model_id=model_id, user_id=user_id, session_id=session_id, debug_mode=debug_mode)
     elif agent_id == AgentType.WALLETY_ASSIST_AGENT:
-        return get_wallety_assist_agent(model_id=model_id, user_id=user_id, session_id=session_id, debug_mode=debug_mode)
+        return get_wallety_assist_agent(user_id=user_id, session_id=session_id, debug_mode=debug_mode)
     
     raise ValueError(f"Agent: {agent_id} not found")

@@ -31,6 +31,6 @@ class LlamaSettings(LLMProviderSettings):
    """Settings fro Llama."""
    
    api_key: str = getenv("AGNO_API_KEY")
-   chat_model: str = "deepseek-r1:8b"
+   chat_model: str = "deepseek-r1:70b"
    default_model: str = "llama3.1:70b"
    embedding_model: str = "llama2:70b"
