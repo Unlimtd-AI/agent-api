@@ -1,27 +1,37 @@
 # constants.py
 
+from config.jinja_config import JinjaSettings
 from config.llm_config import LlamaSettings
 
 
-WALLETY_KNOWLEDGE_URLS = [
-    "https://r.jina.ai/https://wallety.cash",
-    "https://r.jina.ai/https://wallety.cash/company/"
-]
+class WalletyAgentConstants:
+    def __init__(self):
+        jinja = JinjaSettings()
+        llama = LlamaSettings()
 
-# OLLAMA MODELS
-WALLETY_TOOL_MODEL=LlamaSettings().default_model
-WALLETY_EMBEDDING_MODEL=LlamaSettings().embedding_model
+        # Knowledge URLs
+        self.KNOWLEDGE_URLS = [
+            "https://r.jina.ai/https://wallety.cash",
+            "https://r.jina.ai/https://wallety.cash/company/"
+        ]
 
-# Helpdesk constants
-WALLETY_HELPDESK_SESSION_TABLE = "wallety_helpdesk_sessions"
-WALLETY_HELPDESK_KNOWLEDGE_TABLE = "wallety_helpdesk_knowledge"
-WALLETY_HELPDESK_USER_MEMORY_TABLE = "wallety_helpdesk_user_memories"
-WALLETY_HELPDESK_AGENT_ID = "wallety_helpdesk_agent"
-WALLETY_HELPDESK_AGENT_NAME = "Wallety Helpdesk Agent"
+        # LLM Models
+        self.TOOL_MODEL = llama.default_model
+        self.EMBEDDING_MODEL = llama.embedding_model
 
-# Transaction constants
-WALLETY_TRANSACTION_SESSION_TABLE = "wallety_transaction_sessions"
-WALLETY_TRANSACTION_KNOWLEDGE_TABLE = "wallety_transaction_knowledge"
-WALLETY_TRANSACTION_USER_MEMORY_TABLE = "wallety_transaction_user_memories"
-WALLETY_TRANSACTION_AGENT_ID = "wallety_transaction_agent"
-WALLETY_TRANSACTION_AGENT_NAME = "Wallety Transaction Agent"
+        # Helpdesk Constants
+        self.HELPDESK_SESSION_TABLE = "wallety_helpdesk_sessions"
+        self.HELPDESK_KNOWLEDGE_TABLE = "wallety_helpdesk_knowledge"
+        self.HELPDESK_USER_MEMORY_TABLE = "wallety_helpdesk_user_memories"
+        self.HELPDESK_AGENT_ID = "wallety_helpdesk_agent"
+        self.HELPDESK_AGENT_NAME = "Wallety Helpdesk Agent"
+        
+        self.HELPDESK_DESCRIPTION_TEMPLATE = jinja.render_template("wallety_helpdesk_agent_template_description.jinja2")
+        self.HELPDESK_INSTRUCTION_TEMPLATE = jinja.render_template("wallety_helpdesk_agent_template_instructions.jinja2")
+
+        # Transaction Constants
+        self.TRANSACTION_SESSION_TABLE = "wallety_transaction_sessions"
+        self.TRANSACTION_KNOWLEDGE_TABLE = "wallety_transaction_knowledge"
+        self.TRANSACTION_USER_MEMORY_TABLE = "wallety_transaction_user_memories"
+        self.TRANSACTION_AGENT_ID = "wallety_transaction_agent"
+        self.TRANSACTION_AGENT_NAME = "Wallety Transaction Agent"

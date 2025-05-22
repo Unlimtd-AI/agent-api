@@ -12,7 +12,7 @@ class AgentType(Enum):
     WEB_AGENT = "web_agent"
     AGNO_ASSIST = "agno_assist"
     FINANCE_AGENT = "finance_agent"
-    WALLETY_ASSIST_AGENT = "wallety_assist_agent"
+    WALLETY_ASSIST_AGENT = "wallety_helpdesk_agent"
 
 
 def get_available_agents() -> List[str]:
@@ -21,7 +21,6 @@ def get_available_agents() -> List[str]:
 
 
 def get_agent(
-    model_id: str = LlamaSettings().default_model,
     agent_id: Optional[AgentType] = None,
     user_id: Optional[str] = None,
     session_id: Optional[str] = None,
