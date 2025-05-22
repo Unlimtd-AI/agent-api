@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from agents.agno_assist import get_agno_assist
 from agents.finance_agent import get_finance_agent
-from agents.wallety_assist_agent import get_wallety_assist_agent
+from agents.wallety_helpdesk_agent import get_wallety_assist_agent
 from agents.web_agent import get_web_agent
 from config.llm_config import LlamaSettings
 
