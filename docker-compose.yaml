@@ -3,24 +3,40 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ${IMAGE_NAME:-agent-api}:${IMAGE_TAG:-latest}
-    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8001 --reload
     restart: unless-stopped
     ports:
-      - "8000:8000"
       - "8001:8001"
     volumes:
       - .:/app
     environment:
-      AGNO_MONITOR: "True"
-      AGNO_API_KEY: ${AGNO_API_KEY}
-      DB_HOST: pg15-prod-rw.wallety.pg.db-eu2.zcloud.ws
-      DB_PORT: 60421
+      ENVIRONMENT: ${ENVIRONMENT}
+      PROJECT_API: ${PROJECT_API}
+
+      # Database Configuration
       DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+
+      # Docker Image Configuration
+      IMAGE_NAME: ${IMAGE_NAME}
+      IMAGE_TAG: ${IMAGE_TAG}
+
+      # Jinja Configuration
+      PROMPT_TEMPLATES_FOLDER: ${PROMPT_TEMPLATES_FOLDER}
+
+      # API Keys
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      AGNO_API_KEY: ${AGNO_API_KEY}
+
+      AGNO_MONITOR: "True"
       WAIT_FOR_DB: "True"
       PRINT_ENV_ON_LOAD: "True"
+
     networks:
       - agno-agent-api
     extra_hosts:
