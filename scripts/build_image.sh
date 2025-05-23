@@ -18,8 +18,15 @@ set -e
 CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WS_ROOT="$(dirname ${CURR_DIR})"
 DOCKER_FILE="Dockerfile"
-IMAGE_NAME="agent-api"
+IMAGE_NAME="agno-agent-api"
 IMAGE_TAG="latest"
 
-echo "Running: docker buildx build --platform=linux/amd64,linux/arm64 -t $IMAGE_NAME:$IMAGE_TAG -f $DOCKER_FILE $WS_ROOT --push"
-docker buildx build --platform=linux/amd64,linux/arm64 -t $IMAGE_NAME:$IMAGE_TAG -f $DOCKER_FILE $WS_ROOT --push
+REGISTRY=cr.eu-north1.nebius.cloud/e00gg36h3ta91x0e1d
+FULL_IMAGE_NAME=$REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+echo "Running: docker buildx build --platform=linux/amd64,linux/arm64 -t $FULL_IMAGE_NAME -f $DOCKER_FILE $WS_ROOT --push"
+docker buildx build \
+   --platform=linux/amd64,linux/arm64 \
+   -t $FULL_IMAGE_NAME \
+   -f $DOCKER_FILE $WS_ROOT \
+   --push

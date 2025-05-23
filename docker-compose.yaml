@@ -8,26 +8,26 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+      - "8001:8001"
     volumes:
       - .:/app
     environment:
-      # OPENAI_API_KEY: ${OPENAI_API_KEY}
-      # AGNO_MONITOR: "True"
+      AGNO_MONITOR: "True"
       AGNO_API_KEY: ${AGNO_API_KEY}
       DB_HOST: pg15-prod-rw.wallety.pg.db-eu2.zcloud.ws
       DB_PORT: 60421
-      DB_USER: ${DB_USER:-ai}
-      DB_PASS: ${DB_PASSWORD:-ai}
-      DB_DATABASE: ${DB_NAME:-ai}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_NAME}
       WAIT_FOR_DB: "True"
       PRINT_ENV_ON_LOAD: "True"
     networks:
-      - agent-api
+      - agno-agent-api
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 networks:
-  agent-api:
+  agno-agent-api:
 
 volumes:
   pgdata:

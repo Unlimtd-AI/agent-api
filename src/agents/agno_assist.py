@@ -13,6 +13,7 @@ from agno.vectordb.pgvector import PgVector, SearchType
 
 from db.session import db_url
 
+
 def get_agno_assist_knowledge() -> AgentKnowledge:
     return UrlKnowledge(
         urls=["https://docs.agno.com/llms-full.txt"],
@@ -20,9 +21,10 @@ def get_agno_assist_knowledge() -> AgentKnowledge:
             db_url=db_url,
             table_name="agno_assist_knowledge",
             search_type=SearchType.hybrid,
-            embedder=OllamaEmbedder(id="llama2:7b")
+            embedder=OllamaEmbedder(id="llama2:7b"),
         ),
     )
+
 
 def get_agno_assist(
     model_id: str = "llama3.1:8b",

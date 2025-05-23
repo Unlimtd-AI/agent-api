@@ -11,6 +11,7 @@ from agno.tools.duckduckgo import DuckDuckGoTools
 from config.jinja_config import JinjaSettings
 from db.session import db_url
 
+
 def get_web_agent(
     model_id: str = "llama3.1:8b",
     user_id: Optional[str] = None,

@@ -5,10 +5,10 @@ from typing import AsyncGenerator, List, Optional
 from agno.agent import Agent, AgentKnowledge
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import StreamingResponse
-from models.api_requests import RunRequest
 
 from agents.agno_assist import get_agno_assist_knowledge
 from agents.selector import AgentType, get_agent, get_available_agents
+from models.api_requests import RunRequest
 
 logger = getLogger(__name__)
 
@@ -18,6 +18,7 @@ logger = getLogger(__name__)
 
 agents_router = APIRouter(prefix="/agents", tags=["Agents"])
 
+
 @agents_router.get("", response_model=List[str])
 async def list_agents():
     """
@@ -26,8 +27,9 @@ async def list_agents():
     Returns:
         List[str]: List of agent identifiers
     """
-    
+
     return {"agents": get_available_agents()}
+
 
 async def chat_response_streamer(agent: Agent, message: str) -> AsyncGenerator:
     """
@@ -46,11 +48,11 @@ async def chat_response_streamer(agent: Agent, message: str) -> AsyncGenerator:
         # For advanced use cases, we should yield the entire chunk
         # that contains the tool calls and intermediate steps.
         # yield chunk.content
-        
+
         # Wrap each chunk in a JSON object
         data = {"content": chunk.content}
         yield f"{json.dumps(data)}\n\n"  # Server-Sent Events format
-        
+
 
 @agents_router.post("/{agent_id}/runs", status_code=status.HTTP_200_OK)
 async def create_agent_run(agent_id: AgentType, body: RunRequest):

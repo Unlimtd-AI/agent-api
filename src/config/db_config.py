@@ -5,6 +5,7 @@ from pydantic_settings import BaseSettings
 
 load_dotenv()
 
+
 class DatabaseSettings(BaseSettings):
     db_url: str = ""
 

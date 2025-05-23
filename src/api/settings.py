@@ -4,6 +4,7 @@ from pydantic import Field, field_validator
 from pydantic_core.core_schema import FieldValidationInfo
 from pydantic_settings import BaseSettings
 
+
 class ApiSettings(BaseSettings):
     """Api settings that are set using environment variables."""
 
