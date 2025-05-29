@@ -1,41 +1,20 @@
 import os
-
-from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from pydantic import PrivateAttr
-from pydantic_settings import BaseSettings
+from config.base import AppBaseSettings  # Use shared base
 
-load_dotenv()
+class JinjaSettings(AppBaseSettings):
+    prompt_templates_folder: str = "prompts"
 
-
-class JinjaSettings(BaseSettings):
-    """
-    Configuration for Jinja2 template rendering.
-    """
-
-    prompt_templates_folder: str = os.getenv("PROMPT_TEMPLATES_FOLDER", "prompts")
-
-    # Declare env as a private attribute
     _env: Environment = PrivateAttr()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        # Automatically resolve the root directory of the project
-        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+        templates_dir = os.path.abspath(os.path.join(root_dir, self.prompt_templates_folder))
 
-        # Combine with your templates folder
-        templates_dir = os.path.join(root_dir, self.prompt_templates_folder)
-
-        # Normalize to absolute path
-        templates_dir = os.path.abspath(templates_dir)
-
-        # Set up Jinja2 environment
         self._env = Environment(loader=FileSystemLoader(templates_dir))
 
     def render_template(self, template_name: str, **kwargs) -> str:
-        """
-        Render a Jinja2 template with given parameters.
-        """
-        template = self._env.get_template(template_name)
-        return template.render(**kwargs)
+        return self._env.get_template(template_name).render(**kwargs)

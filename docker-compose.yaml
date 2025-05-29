@@ -36,6 +36,7 @@ services:
       AGNO_MONITOR: "True"
       WAIT_FOR_DB: "True"
       PRINT_ENV_ON_LOAD: "True"
+      PYTHONPATH: "src"
 
     networks:
       - agno-agent-api

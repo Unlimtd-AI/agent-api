@@ -1,25 +1,25 @@
 from os import getenv
+from config.base import AppBaseSettings
 
-from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
-
-load_dotenv()
-
-
-class DatabaseSettings(BaseSettings):
+class DatabaseSettings(AppBaseSettings):
     db_url: str = ""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        driver = getenv("DB_DRIVER", "postgresql+psycopg")
-        user = getenv("DB_USER")
-        password = getenv("DB_PASS")
-        host = getenv("DB_HOST")
-        port = getenv("DB_PORT")
-        database = getenv("DB_DATABASE")
+
+        driver = self._get("DB_DRIVER", "postgresql+psycopg")
+        user = self._get("DB_USER")
+        password = self._get("DB_PASS")
+        host = self._get("DB_HOST")
+        port = self._get("DB_PORT")
+        database = self._get("DB_DATABASE")
 
         password_part = f":{password}" if password else ""
         self.db_url = f"{driver}://{user}{password_part}@{host}:{port}/{database}"
 
-    def __str__(self) -> str:
+    def _get(self, key, default=None):
+        # Uses pydantic's built-in environment loading
+        return getenv(key, default)
+
+    def __str__(self):
         return self.db_url
