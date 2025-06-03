@@ -23,7 +23,7 @@ class WatiMessagingToolkit(Toolkit):
    #    return response.json()
    
    def get_templates(self) -> str:
-      response = httpx.get(f"{self.W_API_URL}/Wati/GetMessageTemplates")
+      response = httpx.get(f"{self.W_API_URL}/Wati/TemplateList")
       return response.json()
       
       
