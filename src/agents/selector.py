@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from agents.agno_assist import get_agno_assist
 from agents.finance_agent import get_finance_agent
+from agents.wallety_agno_agent_team import WalletyAgentTeam
 from agents.wallety_team.wallety_helpdesk_agent import WalletyHelpdeskAgentService
 from agents.web_agent import get_web_agent
 
@@ -11,8 +12,7 @@ class AgentType(Enum):
     WEB_AGENT = "web_agent"
     AGNO_ASSIST = "agno_assist"
     FINANCE_AGENT = "finance_agent"
-    WALLETY_HELPDESK_AGENT = "wallety_helpdesk_agent"
-    WALLETY_TRANSACTION_AGENT = "wallety_transaction_agent"
+    WALLETY_TEAM = "wallety_agno_agent_team"
 
 
 def get_available_agents() -> List[str]:
@@ -34,9 +34,7 @@ def get_agent(
         return get_agno_assist(model_id=model_id, user_id=user_id, session_id=session_id, debug_mode=debug_mode)
     elif agent_id == AgentType.FINANCE_AGENT:
         return get_finance_agent(model_id=model_id, user_id=user_id, session_id=session_id, debug_mode=debug_mode)
-    elif agent_id == AgentType.WALLETY_HELPDESK_AGENT:
-        return WalletyHelpdeskAgentService().get_wallety_helpdesk_agent(
-            user_id=user_id, session_id=session_id, debug_mode=debug_mode
-        )
+    elif agent_id == AgentType.WALLETY_TEAM:
+        return WalletyAgentTeam().get_wallety_agno_agent_team()
 
     raise ValueError(f"Agent: {agent_id} not found")

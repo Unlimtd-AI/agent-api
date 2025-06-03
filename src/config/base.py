@@ -10,5 +10,6 @@ class AppBaseSettings(BaseSettings):
     Common base for all settings. Automatically loads from .env
     """
     class Config:
+        extra = "allow"
         env_file = ".env"
         env_file_encoding = "utf-8"

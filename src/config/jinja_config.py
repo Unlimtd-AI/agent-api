@@ -1,18 +1,21 @@
 import os
 from jinja2 import Environment, FileSystemLoader
-from pydantic import PrivateAttr
-from config.base import AppBaseSettings  # Use shared base
+from pydantic import PrivateAttr, Field
+from config.base import AppBaseSettings
 
 class JinjaSettings(AppBaseSettings):
-    prompt_templates_folder: str = "prompts"
+    prompt_templates_folder: str = Field("src/prompt_templates", env="PROMPT_TEMPLATES_FOLDER")
 
     _env: Environment = PrivateAttr()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
-        templates_dir = os.path.abspath(os.path.join(root_dir, self.prompt_templates_folder))
+        # Dynamically resolve the root directory (2 levels up from this file: /src/config/)
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        
+        # Normalize and join path to the templates
+        templates_dir = os.path.normpath(os.path.join(root_dir, self.prompt_templates_folder))
 
         self._env = Environment(loader=FileSystemLoader(templates_dir))
 

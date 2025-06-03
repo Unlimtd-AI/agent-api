@@ -38,12 +38,20 @@ services:
       PRINT_ENV_ON_LOAD: "True"
       PYTHONPATH: "src"
 
+      # Wati Templates
+      WALLETY_API_URL: "https://staging.api.wallety.cash/api/v1"
+      MESSAGING_API_URL: "https://api.messaging.wallety.cash/api/v1"
+      MESSAGE_LOG_TYPE_ID: "76496eb7-bb57-4aef-9f92-6a6bf5a07a37"
+
     networks:
       - agno-agent-api
+      - nginxproxymanager_default
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 networks:
+  nginxproxymanager_default:
+    external: true
   agno-agent-api:
 
 volumes:

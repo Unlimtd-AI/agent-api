@@ -2,6 +2,7 @@ import json
 from logging import getLogger
 from typing import AsyncGenerator, List, Optional
 
+from agents.wallety_team.wallety_helpdesk_agent import WalletyHelpdeskAgentService
 from agno.agent import Agent, AgentKnowledge
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import StreamingResponse
@@ -28,7 +29,7 @@ async def list_agents():
         List[str]: List of agent identifiers
     """
 
-    return {"agents": get_available_agents()}
+    return get_available_agents()
 
 
 async def chat_response_streamer(agent: Agent, message: str) -> AsyncGenerator:
@@ -43,15 +44,16 @@ async def chat_response_streamer(agent: Agent, message: str) -> AsyncGenerator:
         Text chunks from the agent response
     """
     run_response = await agent.arun(message, stream=True)
+    
     async for chunk in run_response:
         # chunk.content only contains the text response from the Agent.
         # For advanced use cases, we should yield the entire chunk
         # that contains the tool calls and intermediate steps.
-        # yield chunk.content
+        yield chunk.content
 
         # Wrap each chunk in a JSON object
-        data = {"content": chunk.content}
-        yield f"{json.dumps(data)}\n\n"  # Server-Sent Events format
+        # data = {"content": chunk.content}
+        # yield f"{json.dumps(data)}\n\n"  # Server-Sent Events format
 
 
 @agents_router.post("/{agent_id}/runs", status_code=status.HTTP_200_OK)
@@ -88,6 +90,7 @@ async def create_agent_run(agent_id: AgentType, body: RunRequest):
         # For advanced use cases, we should yield the entire response
         # that contains the tool calls and intermediate steps.
         # return response.content
+                
         return {"content": response.content}
 
 
@@ -104,8 +107,8 @@ async def load_agent_knowledge(agent_id: AgentType):
     """
     agent_knowledge: Optional[AgentKnowledge] = None
 
-    if agent_id == AgentType.AGNO_ASSIST:
-        agent_knowledge = get_agno_assist_knowledge()
+    if agent_id == AgentType.WALLETY_TEAM:
+        agent_knowledge = WalletyHelpdeskAgentService().get_agent_knowledge()
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -113,7 +116,8 @@ async def load_agent_knowledge(agent_id: AgentType):
         )
 
     try:
-        await agent_knowledge.aload(upsert=True)
+        # await agent_knowledge.aload(upsert=True)
+        agent_knowledge.load()
     except Exception as e:
         logger.error(f"Error loading knowledge base for {agent_id}: {e}")
         raise HTTPException(
