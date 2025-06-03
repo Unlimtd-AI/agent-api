@@ -10,17 +10,17 @@ class WatiMessagingToolkit(Toolkit):
    def __init__(self):
       super().__init__(name="wati_messaging_toolkit")
       
-   def send_template(self, to_field: str, body: str) -> str :
+   # def send_template(self, to_field: str, body: str) -> str :
       
-      data = {
-         "MessageLogTypeId": self.M_ID,
-         "Subject": "Wati Service",
-         "ToField": to_field,
-         "Body": body
-      }
+   #    data = {
+   #       "MessageLogTypeId": self.M_ID,
+   #       "Subject": "Wati Service",
+   #       "ToField": to_field,
+   #       "Body": body
+   #    }
       
-      response = httpx.post(f"{self.M_API_URL}/Messaging/CreateOutboundMail", data=data)
-      return response.json()
+   #    response = httpx.post(f"{self.M_API_URL}/Messaging/CreateOutboundMail", data=data)
+   #    return response.json()
    
    def get_templates(self) -> str:
       response = httpx.get(f"{self.W_API_URL}/Wati/GetMessageTemplates")
