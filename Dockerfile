@@ -8,7 +8,9 @@ RUN curl -fsSL https://ollama.com/install.sh | sh
 
 ARG USER=app
 ARG APP_DIR=/app
+
 ENV APP_DIR=${APP_DIR}
+ENV OLLAMA_HOME=${APP_DIR}/.ollama
 
 # Create user and home directory
 RUN groupadd -g 61000 ${USER} \
@@ -24,13 +26,16 @@ COPY requirements.txt ./
 # Install requirements
 RUN uv pip sync requirements.txt --system
 
-# Install Ollama
-
 # Copy project files
 COPY . .
 
 # Set permissions for the /app directory
 RUN chown -R ${USER}:${USER} ${APP_DIR}
+
+# Set permissions for the .ollama directory
+RUN mkdir -p ${APP_DIR}/.ollama && chown -R ${USER}:${USER} ${APP_DIR}/.ollama
+
+RUN chmod +x /app/scripts/prod/ollama_setup.sh && /app/scripts/prod/ollama_setup.sh
 
 # Switch to non-root user
 USER ${USER}
