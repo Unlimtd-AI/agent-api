@@ -7,8 +7,18 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
+# Set permissions for the .ollama directory
+# Ensure the app directory and .ollama directory exist with correct permissions
+
+
+sudo mkdir -p /app/.ollama
+
+sudo chown -R app:app /app/
+sudo chmod -R 755 /app/
+sudo chmod 700 /app/.ollama
+
 # echo "Serve Ollama"
-sudo nohup ollama serve > /tmp/ollama.log 2>&1 &
+nohup ollama serve > /tmp/ollama.log 2>&1 &
 
 sleep 5
 
