@@ -16,6 +16,8 @@ COPY requirements.txt ./
 # Install requirements
 RUN uv pip sync requirements.txt --system
 
+# Install Ollama
+
 # Copy project files
 COPY . .
 

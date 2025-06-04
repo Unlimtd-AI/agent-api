@@ -5,7 +5,7 @@ import httpx
 class WatiMessagingToolkit(Toolkit):
    M_API_URL = WatiSettings().MESSAGING_API_URL
    M_ID = WatiSettings().MESSAGE_LOG_TYPE_ID
-   W_API_URL = WatiSettings().MESSAGING_API_URL
+   W_API_URL = WatiSettings().WALLETY_API_URL
 
    def __init__(self):
       super().__init__(name="wati_messaging_toolkit")
