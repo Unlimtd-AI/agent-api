@@ -43,6 +43,9 @@ services:
       MESSAGING_API_URL: "https://api.messaging.wallety.cash/api/v1"
       MESSAGE_LOG_TYPE_ID: "76496eb7-bb57-4aef-9f92-6a6bf5a07a37"
 
+      # Ollama Configuration
+      OLLAMA_HOME: "$HOME/.ollama"
+
     networks:
       - agno-agent-api
       - nginxproxymanager_default
