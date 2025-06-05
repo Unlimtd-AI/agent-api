@@ -9,6 +9,7 @@ from fastapi.responses import StreamingResponse
 
 from agents.selector import AgentType, get_agent, get_available_agents
 from models.api_requests import RunRequest
+from services.wati_messaging import WatiMessagingService
 
 logger = getLogger(__name__)
 
@@ -56,7 +57,7 @@ async def chat_response_streamer(agent: Agent, message: str) -> AsyncGenerator:
 
 
 @agents_router.post("/{agent_id}/runs", status_code=status.HTTP_200_OK)
-async def create_agent_run(agent_id: AgentType, body: RunRequest):
+async def create_agent_run(agent_id: AgentType, request: dict):
     """
     Sends a message to a specific agent and returns the response.
 
@@ -67,31 +68,49 @@ async def create_agent_run(agent_id: AgentType, body: RunRequest):
     Returns:
         Either a streaming response or the complete agent response
     """
+    
+    body = RunRequest(**request)
+    
+    service = WatiMessagingService()
+    
     logger.debug(f"RunRequest: {body}")
 
     if body.waId not in ["0724326766", "0658318700"]:
-        return 
+        return body 
 
     try:
         agent: Agent = get_agent(
             agent_id=agent_id,
             user_id=body.waId,
-            session_id=body.session_id,
+            session_id=body.conversationId,
         )
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
     if body.stream:
-        return StreamingResponse(
+        
+        response = StreamingResponse(
             chat_response_streamer(agent, body.text),
             media_type="text/event-stream",
         )
+        
+        service.send_message(
+            recipient_id=body.waId,
+            message=response,
+        )
+        
+        return response
     else:
         response = await agent.arun(body.text, stream=False)
         # In this case, the response.content only contains the text response from the Agent.
         # For advanced use cases, we should yield the entire response
         # that contains the tool calls and intermediate steps.
         # return response.content
+        
+        service.send_message(
+            recipient_id=body.waId,
+            message=response.content,
+        )
                 
         return {"content": response.content}
 

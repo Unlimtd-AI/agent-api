@@ -1,7 +1,7 @@
 import os
+from core.config.base import AppBaseSettings
 from jinja2 import Environment, FileSystemLoader
 from pydantic import PrivateAttr, Field
-from config.base import AppBaseSettings
 
 class JinjaSettings(AppBaseSettings):
     prompt_templates_folder: str = Field("src/prompt_templates", env="PROMPT_TEMPLATES_FOLDER")

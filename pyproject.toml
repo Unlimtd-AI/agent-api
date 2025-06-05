@@ -18,7 +18,9 @@ dependencies = [
   "python-dotenv",
   
   "packaging",
-  "importlib-metadata"
+  "importlib-metadata",
+
+  "requests"
 ]
 
 [project.optional-dependencies]

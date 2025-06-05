@@ -1,5 +1,5 @@
-from config.jinja_config import JinjaSettings
-from config.llm_config import LlamaSettings
+from core.config.jinja_config import JinjaSettings
+from core.config.llm_config import LlamaSettings
 
 
 class WalletyAgentConstants:
