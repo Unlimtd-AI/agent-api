@@ -1,4 +1,3 @@
-from os import getenv
 from config.base import AppBaseSettings
 
 class DatabaseSettings(AppBaseSettings):
@@ -16,10 +15,6 @@ class DatabaseSettings(AppBaseSettings):
 
         password_part = f":{password}" if password else ""
         self.db_url = f"{driver}://{user}{password_part}@{host}:{port}/{database}"
-
-    def _get(self, key, default=None):
-        # Uses pydantic's built-in environment loading
-        return getenv(key, default)
 
     def __str__(self):
         return self.db_url

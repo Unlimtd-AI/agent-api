@@ -9,6 +9,7 @@ from agno.memory.v2.memory import Memory
 from agno.models.ollama import Ollama
 from agno.storage.agent.postgres import PostgresAgentStorage
 from agno.vectordb.pgvector import PgVector, SearchType
+from ollama import Client as OllamaClient
 
 from agents.wallety_team.constants import WalletyAgentConstants
 from db.session import db_url
@@ -58,7 +59,7 @@ class WalletyHelpdeskAgentService(WalletyAgentConstants):
             agent_id=self.HELPDESK_AGENT_ID,
             user_id=user_id,
             session_id=session_id,
-            model=Ollama(id=self.TOOL_MODEL),
+            model=Ollama(id=self.TOOL_MODEL, host=self.OLLAMA_HOST),
             # Description of the agent
             description=dedent(self.HELPDESK_DESCRIPTION_TEMPLATE),
             # Instructions for the agent

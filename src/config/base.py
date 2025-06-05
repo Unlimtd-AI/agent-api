@@ -1,4 +1,4 @@
-import os
+from os import getenv
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
@@ -13,3 +13,7 @@ class AppBaseSettings(BaseSettings):
         extra = "allow"
         env_file = ".env"
         env_file_encoding = "utf-8"
+        
+    def _get(self, key, default=None):
+        # Uses pydantic's built-in environment loading
+        return getenv(key, default)

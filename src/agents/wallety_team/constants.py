@@ -16,6 +16,7 @@ class WalletyAgentConstants:
         # LLM Models
         self.TOOL_MODEL = llama.default_model
         self.EMBEDDING_MODEL = llama.embedding_model
+        self.OLLAMA_HOST = "http://ollama-server:11434"
 
         # Helpdesk Constants
         self.HELPDESK_SESSION_TABLE = "wallety_helpdesk_sessions"

@@ -51,7 +51,10 @@
    "runArgs": [
       "--env-file",
       ".devcontainer/.env",
-      "--privileged"
+      "--privileged",
+      "--network=ollama-network",
+      "--gpus=all",
+      "--add-host=host.docker.internal:host-gateway"
    ],
    "mounts": [
       "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",

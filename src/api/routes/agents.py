@@ -69,10 +69,13 @@ async def create_agent_run(agent_id: AgentType, body: RunRequest):
     """
     logger.debug(f"RunRequest: {body}")
 
+    if body.waId not in ["0724326766", "0658318700"]:
+        return 
+
     try:
         agent: Agent = get_agent(
             agent_id=agent_id,
-            user_id=body.user_id,
+            user_id=body.waId,
             session_id=body.session_id,
         )
     except ValueError as e:
@@ -80,11 +83,11 @@ async def create_agent_run(agent_id: AgentType, body: RunRequest):
 
     if body.stream:
         return StreamingResponse(
-            chat_response_streamer(agent, body.message),
+            chat_response_streamer(agent, body.text),
             media_type="text/event-stream",
         )
     else:
-        response = await agent.arun(body.message, stream=False)
+        response = await agent.arun(body.text, stream=False)
         # In this case, the response.content only contains the text response from the Agent.
         # For advanced use cases, we should yield the entire response
         # that contains the tool calls and intermediate steps.
