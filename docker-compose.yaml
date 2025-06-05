@@ -39,10 +39,15 @@ services:
       PYTHONPATH: "src"
 
       # Wati Templates
-      WALLETY_API_URL: "https://staging.api.wallety.cash/api/v1"
-      MESSAGING_API_URL: "https://api.messaging.wallety.cash/api/v1"
-      MESSAGE_LOG_TYPE_ID: "76496eb7-bb57-4aef-9f92-6a6bf5a07a37"
+      WALLETY_API_URL: ${WALLETY_API_URL}
+      MESSAGING_API_URL: ${MESSAGING_API_URL}
+      MESSAGE_LOG_TYPE_ID: ${MESSAGE_LOG_TYPE_ID}
 
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+
+      # Wati Messaging
+      WATI_API_URL: ${WATI_API_URL}
+      WALLETY_API_KEY: ${WALLETY_API_KEY}
     networks:
       - agno-agent-api
       - nginxproxymanager_default
