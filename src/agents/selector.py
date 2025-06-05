@@ -2,8 +2,7 @@ from enum import Enum
 from typing import List, Optional
 
 from agents.wallety_team.wallety_helpdesk_agent import WalletyHelpdeskAgentService
-from agents.web_agent import get_web_agent
-
+from agents.web_agent import WalletyWebAgentService
 
 class AgentType(Enum):
     WEB_AGENT = "web_agent"
@@ -25,7 +24,7 @@ def get_agent(
     model_id = "llama3.1:70b"
 
     if agent_id == AgentType.WEB_AGENT:
-        return get_web_agent(model_id=model_id, user_id=user_id, session_id=session_id, debug_mode=debug_mode)
+        return WalletyWebAgentService().get_web_agent(model_id=model_id, user_id=user_id, session_id=session_id, debug_mode=debug_mode)
     elif agent_id == AgentType.WALLETY_HELPDESK_AGENT:
         return WalletyHelpdeskAgentService().get_wallety_helpdesk_agent(
             user_id=user_id, session_id=session_id, debug_mode=debug_mode

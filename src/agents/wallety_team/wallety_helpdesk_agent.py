@@ -9,16 +9,12 @@ from agno.memory.v2.memory import Memory
 from agno.models.ollama import Ollama
 from agno.storage.agent.postgres import PostgresAgentStorage
 from agno.vectordb.pgvector import PgVector, SearchType
-from ollama import Client as OllamaClient
 
 from agents.wallety_team.constants import WalletyAgentConstants
-from db.session import db_url
-
 
 class WalletyHelpdeskAgentService(WalletyAgentConstants):
     def __init__(self):
         super().__init__()
-        self.db_url = db_url
 
     # Initialize knowledge base
     def get_agent_knowledge(self) -> AgentKnowledge:
@@ -26,7 +22,7 @@ class WalletyHelpdeskAgentService(WalletyAgentConstants):
             urls=self.KNOWLEDGE_URLS,
             vector_db=PgVector(
                 table_name=self.HELPDESK_KNOWLEDGE_TABLE,
-                db_url=db_url,
+                db_url=self.DB_URL,
                 search_type=SearchType.hybrid,
                 embedder=OllamaEmbedder(id=self.EMBEDDING_MODEL),
             ),
@@ -37,13 +33,13 @@ class WalletyHelpdeskAgentService(WalletyAgentConstants):
             # store sessions in the ai.sessions table
             table_name=self.HELPDESK_SESSION_TABLE,
             # db_url: Postgres database URL
-            db_url=db_url,
+            db_url=self.DB_URL,
         )
 
     def get_agent_memory(self) -> Memory:
         return Memory(
             model=Ollama(id=self.TOOL_MODEL),
-            db=PostgresMemoryDb(table_name=self.HELPDESK_USER_MEMORY_TABLE, db_url=db_url),
+            db=PostgresMemoryDb(table_name=self.HELPDESK_USER_MEMORY_TABLE, db_url=self.DB_URL),
             delete_memories=False,
             clear_memories=False,
         )

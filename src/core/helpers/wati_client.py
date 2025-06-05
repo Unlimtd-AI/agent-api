@@ -1,15 +1,18 @@
 import requests
 from core.config.wati_config import WatiSettings
 
-class WatiClient(WatiSettings):
+class WatiClient:
     """
     Handles direct communication with the Wati API.
     """
+    
     def __init__(self):
-        self.api_base_url = self.WATI_API_URL
+        settings = WatiSettings()
+        
+        self.api_base_url = settings.WATI_API_URL
         self.headers = {
             'accept': '*/*',
-            'Authorization': f'Bearer {self.WATI_API_KEY}'
+            'Authorization': f'{settings.WATI_API_KEY}'
         }
 
     def send_message(self, recipient_id: str, message: str) -> bool:
@@ -20,6 +23,7 @@ class WatiClient(WatiSettings):
         :param message: Text message to send.
         :return: True if message was successfully sent, False otherwise.
         """
+        
         url = f"{self.api_base_url}/sendSessionMessage/{recipient_id}?messageText={message}"
 
         try:

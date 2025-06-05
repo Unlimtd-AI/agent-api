@@ -1,6 +1,6 @@
 from core.config.jinja_config import JinjaSettings
 from core.config.llm_config import LlamaSettings
-
+from core.db.session import DbSession
 
 class WalletyAgentConstants:
     def __init__(self):
@@ -12,6 +12,8 @@ class WalletyAgentConstants:
             "https://r.jina.ai/https://wallety.cash",
             "https://r.jina.ai/https://wallety.cash/company/",
         ]
+        
+        self.DB_URL = DbSession().db_url
 
         # LLM Models
         self.TOOL_MODEL = llama.default_model

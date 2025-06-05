@@ -1,4 +1,4 @@
-from config.base import AppBaseSettings
+from core.config.base import AppBaseSettings
 
 class DatabaseSettings(AppBaseSettings):
     db_url: str = ""

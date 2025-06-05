@@ -1,15 +1,15 @@
-import json
-from logging import getLogger
-from typing import AsyncGenerator, List, Optional
+g import getLogger
+from typing import List, Optional
 
-from agents.wallety_team.wallety_helpdesk_agent import WalletyHelpdeskAgentService
 from agno.agent import Agent, AgentKnowledge
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import StreamingResponse
 
 from agents.selector import AgentType, get_agent, get_available_agents
-from models.api_requests import RunRequest
+from core.models.api_requests import RunRequest
+from helpers.agent_helper import AgentHelper
 from services.wati_messaging import WatiMessagingService
+from agents.wallety_team.wallety_helpdesk_agent import WalletyHelpdeskAgentService
 
 logger = getLogger(__name__)
 
@@ -32,29 +32,6 @@ async def list_agents():
     return get_available_agents()
 
 
-async def chat_response_streamer(agent: Agent, message: str) -> AsyncGenerator:
-    """
-    Stream agent responses chunk by chunk.
-
-    Args:
-        agent: The agent instance to interact with
-        message: User message to process
-
-    Yields:
-        Text chunks from the agent response
-    """
-    run_response = await agent.arun(message, stream=True)
-    
-    async for chunk in run_response:
-        # chunk.content only contains the text response from the Agent.
-        # For advanced use cases, we should yield the entire chunk
-        # that contains the tool calls and intermediate steps.
-        yield chunk.content
-
-        # Wrap each chunk in a JSON object
-        # data = {"content": chunk.content}
-        # yield f"{json.dumps(data)}\n\n"  # Server-Sent Events format
-
 
 @agents_router.post("/{agent_id}/runs", status_code=status.HTTP_200_OK)
 async def create_agent_run(agent_id: AgentType, request: dict):
@@ -72,11 +49,9 @@ async def create_agent_run(agent_id: AgentType, request: dict):
     body = RunRequest(**request)
     
     service = WatiMessagingService()
-    
-    logger.debug(f"RunRequest: {body}")
-
-    if body.waId not in ["0724326766", "0658318700"]:
-        return body 
+     
+    if body.waId not in ["27724326766", "27658318700"]:
+        return 
 
     try:
         agent: Agent = get_agent(
@@ -87,33 +62,32 @@ async def create_agent_run(agent_id: AgentType, request: dict):
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
+    if body.stream is None:
+        body.stream = True
+
     if body.stream:
         
-        response = StreamingResponse(
-            chat_response_streamer(agent, body.text),
-            media_type="text/event-stream",
-        )
-        
-        service.send_message(
-            recipient_id=body.waId,
-            message=response,
-        )
-        
-        return response
-    else:
-        response = await agent.arun(body.text, stream=False)
-        # In this case, the response.content only contains the text response from the Agent.
-        # For advanced use cases, we should yield the entire response
-        # that contains the tool calls and intermediate steps.
-        # return response.content
-        
-        service.send_message(
-            recipient_id=body.waId,
-            message=response.content,
-        )
-                
-        return {"content": response.content}
+        # Buffer to collect the full message
+        full_response_parts = []
 
+        async def stream_with_buffer():
+            async for part in AgentHelper().chat_response_streamer(agent, body.text):
+                full_response_parts.append(part)
+                yield part
+
+        async def stream_and_send():
+            # Wrap the generator to track completion
+            async for part in stream_with_buffer():
+                yield part
+            # After the full stream is done, send the full message to WhatsApp
+            full_message = "".join(full_response_parts)
+            
+            service.send_message(
+                recipient_id=body.waId,
+                message=full_message,
+            )
+
+        return StreamingResponse(stream_and_send(), media_type="text/event-stream")
 
 @agents_router.post("/{agent_id}/knowledge/load", status_code=status.HTTP_200_OK)
 async def load_agent_knowledge(agent_id: AgentType):

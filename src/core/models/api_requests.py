@@ -6,6 +6,6 @@ class RunRequest(BaseModel):
 
     waId: str
     text: str
-    stream: bool = True
+    stream: bool = False
     conversationId: Optional[str] = None
     

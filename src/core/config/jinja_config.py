@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 from pydantic import PrivateAttr, Field
 
 class JinjaSettings(AppBaseSettings):
-    prompt_templates_folder: str = Field("src/prompt_templates", env="PROMPT_TEMPLATES_FOLDER")
+    prompt_templates_folder: str = Field("src/core/prompt_templates", env="PROMPT_TEMPLATES_FOLDER")
 
     _env: Environment = PrivateAttr()
 
@@ -12,7 +12,7 @@ class JinjaSettings(AppBaseSettings):
         super().__init__(**kwargs)
 
         # Dynamically resolve the root directory (2 levels up from this file: /src/config/)
-        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "../.."))
         
         # Normalize and join path to the templates
         templates_dir = os.path.normpath(os.path.join(root_dir, self.prompt_templates_folder))
