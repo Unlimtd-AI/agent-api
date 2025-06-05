@@ -1,4 +1,4 @@
-g import getLogger
+from logging import getLogger
 from typing import List, Optional
 
 from agno.agent import Agent, AgentKnowledge
